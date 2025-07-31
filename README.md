@@ -220,6 +220,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📞 Contact
 
-- Project Link: [https://github.com/yourusername/fantasy-football-neuron](https://github.com/yourusername/fantasy-football-neuron)
 - Click on Discussions here at the Link
 
