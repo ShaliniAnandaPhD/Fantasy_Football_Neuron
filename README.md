@@ -220,5 +220,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📞 Contact
 
-- Click on Discussions here at the Link
+- Click on Discussions here at the Link : https://github.com/ShaliniAnandaPhD/Fantasy_Football_Neuron/discussions
 
