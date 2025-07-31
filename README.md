@@ -33,7 +33,7 @@ An AI-powered fantasy football debate platform featuring six unique AI agents wi
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/fantasy-football-neuron.git
+git clone https://github.com/ShaliniAnandaPhS/fantasy-football-neuron.git
 cd fantasy-football-neuron
 
 # Install backend dependencies
