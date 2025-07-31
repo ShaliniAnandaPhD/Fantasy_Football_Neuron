@@ -1,0 +1,93 @@
+### CREDENTIALS FOR GCP AND GCP PROJECT ARE NOT HERE - THIS IS AN EXAMPLE
+
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: fantasy-football-neuron-api
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/cpu-throttling: "false"
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "100"
+        run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/execution-environment: gen2
+    spec:
+      serviceAccountName: ffn-service-account
+      containerConcurrency: 100
+      timeoutSeconds: 300
+      containers:
+      - name: api
+        image: gcr.io/XXXPROJECT_IDXXXX/fantasy-football-neuron-api:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        - name: GCP_PROJECT_ID
+          value: "YOUR_PROJECT_ID"
+        - name: VERTEX_AI_LOCATION
+          value: "us-central1"
+        - name: ENABLE_VOICE_CACHE
+          value: "true"
+        - name: ENABLE_SMART_ROUTING
+          value: "true"
+        - name: DAILY_BUDGET
+          value: "50.0"
+        # Secrets from Secret Manager
+        - name: ELEVENLABS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: elevenlabs-api-key
+              key: latest
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: openai-api-key
+              key: latest
+        - name: UPSTASH_REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: upstash-redis-url
+              key: latest
+        - name: UPSTASH_REDIS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: upstash-redis-token
+              key: latest
+        resources:
+          limits:
+            cpu: "4"
+            memory: "8Gi"
+          requests:
+            cpu: "2"
+            memory: "4Gi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+# Service for internal communication
+apiVersion: v1
+kind: Service
+metadata:
+  name: fantasy-football-neuron-api-internal
+spec:
+  selector:
+    serving.knative.dev/service: fantasy-football-neuron-api
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
